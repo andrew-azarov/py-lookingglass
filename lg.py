@@ -2,21 +2,49 @@
 # coding=utf8
 """
 Copyright (c) 2012 Azar-A Kft.
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 """
-import telnetlib,os,socket,cgi
+import telnetlib
+import os
+import socket
+import cgi
 from wsgiref.simple_server import make_server
+
+# Default configuration
+
+name = 'Looking Glass'
+commands = ['sh ip bgp summary',
+            'sh ip bgp neighbor %ARG% advertised',
+            'ping %ARG%',
+            'traceroute %ARG%']
+hosts = [("password",'ip',port_number,"fancy_name")]
+
+# You own quagga ping and traceroute daemon for telnet connection
+
+quagga_ping_traceroute_daemon = 2784
 
 # Thanks tzot @ stackoverflow.com
 
 def is_ipv4(address):
     try:
-        addr= socket.inet_pton(socket.AF_INET, address)
+        addr = socket.inet_pton(socket.AF_INET, address)
     except AttributeError: # no inet_pton here, sorry
         try:
-            addr= socket.inet_aton(address)
+            addr = socket.inet_aton(address)
         except socket.error:
             return False
         return address.count('.') == 3
@@ -25,52 +53,46 @@ def is_ipv4(address):
     return True
 
 def is_ipv6(address):
+    # return False # Uncomment this to disable support for ipv6
     try:
-        addr= socket.inet_pton(socket.AF_INET6, address)
+        addr = socket.inet_pton(socket.AF_INET6, address)
     except socket.error: # not a valid address
         return False
     return True
 
 # end Thanks tzot @ stackoverflow.com
 
-
-commands = ['sh ip bgp summary',
-'sh ip bgp neighbor %ARG% advertised',
-'ping %ARG%',
-'traceroute %ARG%']
-
-# You own quagga ping and traceroute daemon for telnet connection
-
-quagga_ping_traceroute_daemon = 2784
-
-hosts = [
-("password",'ip',port_number,"fancy_name")
-]
-
-def issuecommand(host,port,password,command,arg):
+def issuecommand(host, port, password, command, arg):
     quagga = (port == 2605)
-    if (quagga and command.startswith(("ping","traceroute"))): port = quagga_ping_traceroute_daemon # replace the port for quagga users
+    if (quagga and command.startswith(("ping","traceroute"))):
+        port = quagga_ping_traceroute_daemon # replace the port for quagga
     tn = telnetlib.Telnet(host, port)
-    if password and not (quagga and ("ping" in command or "traceroute" in command)): # password for real router telnet connections only
-        tn.read_until("Password: ")
+    if password and not (quagga and
+                            ("ping" in command or "traceroute" in command)):
+        tn.read_until("Password: ",5) # 5 seconds timeout
         tn.write(password+"\n")
-    if "%ARG%" in command: # if argument in command
-        if is_ipv4(arg) or is_ipv6(arg): # to disable ipv6 write return False in is_ipv6 function beginning
+    if "%ARG%" in command:
+        if is_ipv4(arg) or is_ipv6(arg):
             command = command.replace("%ARG%",arg)
-        else:
+        else: # Hostname support
             try:
                 socket.setdefaulttimeout(5)
                 arg = socket.gethostbyname(arg)
                 command = command.replace("%ARG%",arg)
             except:
-                return "Invalid Argument"
+                raise ValueError
     tn.write(str(command)+"\n") # sanitize arguments!?
-    if not (quagga and ("ping" in command or "traceroute" in command)): # ping traceroute passover daemon to close connection by itself.
+    if not (quagga and ("ping" in command or "traceroute" in command)):
         try:
             tn.write("exit\n")
         except:
             pass
-    return str(os.linesep.join([line for line in str(tn.read_all()).splitlines() if command not in line and "exit" not in line])).strip()
+    read_data = str(tn.read_all()).splitlines()
+    pre_return = []
+    for line in read_data:
+        if command not in line and 'exit' not in line:
+            pre_return.append(line)
+    return str(os.linesep.join(pre_return)).strip()
 
 def template(*args):
     return """
@@ -90,7 +112,7 @@ def template(*args):
 
 def callback(env,respond):
     header = [('Server', 'py-LookingGlass'),('Content-Type', 'text/html')]
-    data = ['Looking Glass','<h1>Not Found</h1>']
+    data = [name,'<h1>Not Found</h1>']
     status = '404 Not found'
     if env['PATH_INFO'] == "/":
         status = '200 OK'
@@ -104,22 +126,41 @@ def callback(env,respond):
                 keep_blank_values=True
             )
             if "host" in post and "command" in post and "args" in post:
-                output = issuecommand(hosts[int(post.getfirst('host'))][1],
-                    hosts[int(post.getfirst('host'))][2],
-                    hosts[int(post.getfirst('host'))][0],
-                    commands[int(post.getfirst('command'))],
-                    post.getfirst('args'))
-        data = ['Looking Glass',"""
+                try:
+                    output = issuecommand(
+                                hosts[int(post.getfirst('host'))][1],
+                                hosts[int(post.getfirst('host'))][2],
+                                hosts[int(post.getfirst('host'))][0],
+                                commands[int(post.getfirst('command'))],
+                                post.getfirst('args'))
+                except ValueError:
+                    output = "Invalid Argument"
+        list_hosts = "".join(["".join(['<option value="',
+                                            str(k),
+                                            '">',
+                                            v[3],
+                                            '</option>'])
+                                for k,v in enumerate(hosts)])
+        list_commands = "".join(["".join(['<option value="',
+                                            str(k),
+                                            '">',
+                                            v,
+                                            '</option>'])
+                                for k,v in enumerate(commands)])
+        data = [name,"""
         <section>
         <header>Looking Glass</header><br>
         <form method="POST">
-            <label>Router:&nbsp;</label><select name="host">"""+str("".join(["".join(['<option value="',str(k),'">',v[3],'</option>']) for k,v in enumerate(hosts)]))+"""</select>&nbsp;&nbsp;&nbsp;
-            <label>Type:&nbsp;</label><select name="command">"""+str("".join(["".join(['<option value="',str(k),'">',v,'</option>']) for k,v in enumerate(commands)]))+"""</select>&nbsp;&nbsp;&nbsp;
+            <label>Router:&nbsp;</label><select name="host">"""
+            +list_hosts+"""</select>
+            <label>Type:&nbsp;</label><select name="command">"""
+            +list_commands+"""</select>
             <label>Argument:&nbsp;</label><input type="text" name="args"/><br>
-            <label>Output:&nbsp;</label><br><textarea style="width:100%;height:400px">"""+output+"""</textarea><br>
+            <label>Output:&nbsp;</label><br><textarea style="width:100%;height:400px">"""
+            +output+"""</textarea><br>
             <button type="submit" name="submit" value="Go">Go</button>
         </form>
-        </section>"""]       
+        </section>"""]
     response = template(*data)
     header.append(('Content-Length', str(len(response))))
     respond(status,header)
