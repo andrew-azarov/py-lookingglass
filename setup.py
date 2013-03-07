@@ -1,7 +1,8 @@
 from distutils.core import setup
 setup(name='lookingglass',
-      version='0.32',
+      version='0.56',
       py_modules=['lg'],
+      url='https://github.com/andrew-azarov/py-lookingglass',
       author='Andrew Azarov',
       author_email='andrew@azar-a.net',
       classifiers=['Development Status :: 4 - Beta',
@@ -32,24 +33,31 @@ Standard python modules:
 - socket 
 - cgi 
 - wsgi\_ref
+- traceback
+- random
+- argparse
 
 Setup:
 ------
 
-To run out of the box just clone the repo and edit the configuration:
+To run out of the box just clone the repo or install using ``pip install py-lookingglass`` or ``easy_install py-lookingglass``, then:
 
-``hosts = [ ("password",'ip',port_number,"fancy_name") ]``
+``# python -m lg -h``
 
-Where
-fancy\_name is the name in the select box (display), other options are
-self-described.
+Or you can use it as WSGI callback
+
+``lg.lookingglass(name="Looking Glass", cmds=['command','list'], hosts=[('password','ip',port,'name'), qptd=quaggaport])``
+
+Any additional hacks can be applied before init of class
+
+Check ``help(lg.lookingglass)`` for more info
 
 QUAGGA users:
 -------------
 
 Change the integer if applicable (www-dev is 2784)
 
-``quagga_ping_traceroute_daemon = 2784``
+``# python -m lg -q 2784``
 
 to the port number of
 quirk.
