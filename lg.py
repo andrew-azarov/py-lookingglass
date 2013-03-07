@@ -22,6 +22,7 @@ import telnetlib
 import os
 import socket
 import cgi
+import traceback
 from wsgiref.simple_server import make_server
 
 class lookingglass(object):
@@ -169,10 +170,10 @@ class lookingglass(object):
                                     post.getfirst('args'))
                     except ValueError as e:
                         output = "Invalid Argument"
-                        print e
+                        traceback.print_exc()
                     except ArgumentError as e:
                         output = "Arguments are disabled"
-                        print e
+                        traceback.print_exc()
             hosts = "".join(["".join(['<option value="',
                                                 str(k),
                                                 '">',
