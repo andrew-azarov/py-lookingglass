@@ -31,6 +31,12 @@ Any additional hacks can be applied before init of class
 
 Check `help(lg.lookingglass)` for more info
 
+Todo:
+-------------
+* Implement quagga script in python as part of the package
+* Add profiles for different systems
+* Long-term: implement paramiko support
+
 QUAGGA users:
 -------------
 Change the integer if applicable (www-dev is 2784)
