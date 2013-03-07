@@ -226,7 +226,7 @@ password, ip and name == string or unicode and port == int""")
             default=[],
             nargs='*',
             action="append",
-            help="Commands list, use %ARG% for substition of IP or hostname argument",
+            help="Commands list, use %%ARG%% for substition of IP or hostname argument",
             required=False)
     parser.add_argument("-H",
             "--hosts",
