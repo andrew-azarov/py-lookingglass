@@ -23,6 +23,7 @@ import os
 import socket
 import cgi
 import traceback
+import random
 from wsgiref.simple_server import make_server
 
 class lookingglass(object):
@@ -109,8 +110,7 @@ class lookingglass(object):
             elif _.resolve: # Hostname support
                 try:
                     socket.setdefaulttimeout(5)
-                    arg = socket.getaddrinfo(arg,None)
-                    print arg
+                    arg = random.choice(socket.getaddrinfo(arg,None))[4][0]
                     command = command.replace("%ARG%",arg)
                 except:
                     traceback.print_exc()
