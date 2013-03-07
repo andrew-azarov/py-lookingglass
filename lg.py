@@ -210,7 +210,7 @@ if __name__ == '__main__':
     def tuples(s):
         try:
             password, ip, port, name = map(unicode, s.split(','))
-            return password, str(ip), int(port), name
+            return str(password), str(ip), int(port), name
         except:
             raise argparse.ArgumentTypeError("""Hosts must be 'password',ip,port,'name'
 password, ip and name == string or unicode and port == int""")
