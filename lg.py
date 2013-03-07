@@ -109,7 +109,7 @@ class lookingglass(object):
             elif _.resolve: # Hostname support
                 try:
                     socket.setdefaulttimeout(5)
-                    arg = socket.gethostbyname(arg)
+                    arg = socket.getaddrinfo(arg,None)[4][0]
                     command = command.replace("%ARG%",arg)
                 except:
                     raise ValueError
