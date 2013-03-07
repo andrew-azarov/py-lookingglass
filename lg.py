@@ -222,7 +222,7 @@ password, ip and name == string or unicode and port == int""")
     parser.add_argument("-c",
             "--commands",
             dest='commands',
-            type=tuples,
+            type=list,
             default=[],
             nargs='*',
             action="append",
@@ -232,9 +232,7 @@ password, ip and name == string or unicode and port == int""")
             "--hosts",
             dest='hosts',
             type=tuples,
-            default=[],
             nargs='*',
-            action="append",
             help="Host list of tuples with password, host address, port number and name for display",
             required=False)
     parser.add_argument("-q",
