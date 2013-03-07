@@ -197,7 +197,7 @@ class lookingglass(object):
                 <button type="submit" name="submit" value="Go">Go</button>
             </form>
             </section>"""]
-        response = template(*data)
+        response = _.template(*data)
         header.append(('Content-Length', str(len(response))))
         respond(status,header)
         return [response]
