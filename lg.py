@@ -127,7 +127,7 @@ class lookingglass(object):
                 pre_return.append(line)
         return str(os.linesep.join(pre_return)).strip()
 
-    def template(_,*args):
+    def __template(_,*args):
         assert len(args) == 2, "%r length is not 2" % args
         return """
             <!DOCTYPE html>
@@ -167,10 +167,12 @@ class lookingglass(object):
                                     _.hosts[int(post.getfirst('host'))][0],
                                     _.cmds[int(post.getfirst('command'))],
                                     post.getfirst('args'))
-                    except ValueError:
+                    except ValueError as e:
                         output = "Invalid Argument"
-                    except ArgumentError:
+                        print e
+                    except ArgumentError as e:
                         output = "Arguments are disabled"
+                        print e
             hosts = "".join(["".join(['<option value="',
                                                 str(k),
                                                 '">',
@@ -197,7 +199,7 @@ class lookingglass(object):
                 <button type="submit" name="submit" value="Go">Go</button>
             </form>
             </section>"""]
-        response = _.template(*data)
+        response = _.__template(*data)
         header.append(('Content-Length', str(len(response))))
         respond(status,header)
         return [response]
@@ -207,7 +209,7 @@ if __name__ == '__main__':
     def tuples(s):
         try:
             password, ip, port, name = map(unicode, s.split(','))
-            return unicode(password[1:-1]), str(ip), int(port), unicode(name[1:-1])
+            return password, str(ip), int(port), name
         except:
             raise argparse.ArgumentTypeError("""Hosts must be 'password',ip,port,'name'
 password, ip and name == string or unicode and port == int""")
