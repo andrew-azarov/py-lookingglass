@@ -244,6 +244,20 @@ password, ip and name == string or unicode and port == int""")
             default=2784,
             help="Quagga ping and traceroute daemon port for telnet connection",
             required=False)
+    parser.add_argument("-b",
+            "--bind",
+            type=str,
+            dest='bind',
+            default='localhost',
+            help="IP to bind",
+            required=False)
+    parser.add_argument("-p",
+            "--port",
+            type=int,
+            dest='port',
+            default=8000,
+            help="port to bind",
+            required=False)
     a = parser.parse_args()
     if a.commands:
         commands = a.commands
@@ -258,5 +272,5 @@ password, ip and name == string or unicode and port == int""")
         hosts = [("password1","192.168.0.1",23,"Cisco"),
         ("password2","192.168.1.1",2605,"Quagga"),
         ("password3","192.168.2.1",23,"Juniper")]
-    httpd = make_server('localhost', 8000, lookingglass(name=a.name,cmds=commands,hosts=hosts,qptd=a.qptd))
+    httpd = make_server(a.bind, a.port, lookingglass(name=a.name,cmds=commands,hosts=hosts,qptd=a.qptd))
     httpd.serve_forever()
