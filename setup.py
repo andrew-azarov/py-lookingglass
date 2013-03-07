@@ -1,5 +1,5 @@
 from distutils.core import setup
-setup(name='lookingglass',
+setup(name='py-lookingglass',
       version='0.56',
       py_modules=['lg'],
       url='https://github.com/andrew-azarov/py-lookingglass',
