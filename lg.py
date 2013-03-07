@@ -112,6 +112,7 @@ class lookingglass(object):
                     arg = socket.getaddrinfo(arg,None)[4][0]
                     command = command.replace("%ARG%",arg)
                 except:
+                    traceback.print_exc()
                     raise ValueError
             else:
                 raise ArgumentError
