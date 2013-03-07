@@ -51,10 +51,10 @@ class lookingglass(object):
     resolve = True
     
     def __init__(_,**kwargs):
-        for name,value in _.__dict__.items():
-            if not value:
-                setattr(_,name,kwargs['name'])
-            assert _.__dict__[name], "%s is not set" % name
+        for i in ['name','cmds','hosts','qptd']:
+            if not _.__dict__.has_key(i) or not _.__dict__[i]:
+                setattr(_,i,kwargs[i])
+            assert _.__dict__[i], "%s is not set" % i
         assert isinstance(_.name,(str,unicode)), "%r is not string or unicode" % _.name
         assert isinstance(_.cmds,list), "%r is not list" % _.cmds
         for d in _.cmds:
@@ -214,12 +214,14 @@ password, ip and name == string or unicode and port == int""")
     parser = argparse.ArgumentParser()
     parser.add_argument("-n",
             "--name",
+            dest='name',
             type=str,
             default='Looking Glass',
             help="Header name for pages",
             required=False)
     parser.add_argument("-c",
             "--commands",
+            dest='commands',
             type=tuples,
             default=[],
             nargs='*',
@@ -228,6 +230,7 @@ password, ip and name == string or unicode and port == int""")
             required=False)
     parser.add_argument("-H",
             "--hosts",
+            dest='hosts',
             type=tuples,
             default=[],
             nargs='*',
@@ -254,5 +257,5 @@ password, ip and name == string or unicode and port == int""")
         hosts = [("password1","192.168.0.1",23,"Cisco"),
         ("password2","192.168.1.1",2605,"Quagga"),
         ("password3","192.168.2.1",23,"Juniper")]
-    httpd = make_server('::', 8000, lookingglass(name=a.name,cmds=commands,hosts=hosts,qptd=a.qptd))
+    httpd = make_server('localhost', 8000, lookingglass(name=a.name,cmds=commands,hosts=hosts,qptd=a.qptd))
     httpd.serve_forever()
