@@ -110,6 +110,7 @@ class lookingglass(object):
                 try:
                     socket.setdefaulttimeout(5)
                     arg = socket.getaddrinfo(arg,None)[4][0]
+                    print arg
                     command = command.replace("%ARG%",arg)
                 except:
                     traceback.print_exc()
