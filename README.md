@@ -19,7 +19,7 @@ Standard python modules:
 
 Setup:
 ------
-To run out of the box just clone the repo or install using pip or easy_install, then:
+To run out of the box just clone the repo or install using `pip install py-lookingglass` or `easy_install py_lookingglass`, then:
 ```console
 # python -m lg -h
 ```
@@ -29,7 +29,7 @@ lg.lookingglass(name="Looking Glass", cmds=['command','list'], hosts=[('password
 ```
 Any additional hacks can be applied before init of class
 
-Check ```help(lg.lookingglass)``` for more info
+Check `help(lg.lookingglass)` for more info
 
 QUAGGA users:
 -------------
