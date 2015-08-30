@@ -74,27 +74,27 @@ class lookingglass(object):
         for i in ['name', 'cmds', 'hosts']:
             if not i in self.__dict__ or not self.__dict__[i]:
                 setattr(self, i, kwargs[i])
-            assrt(self.__dict__[i], "%s is not set" % i)
+            assrt(self.__dict__[i], "%s is not set".format(i))
         assrt(isinstance(self.name, (str, unicode)),
-              "%r is not string or unicode" % self.name)
-        assrt(isinstance(self.cmds, dict), "%r is not dict" % self.cmds)
+              "{0!r} is not string or unicode".format(self.name))
+        assrt(isinstance(self.cmds, dict), "{0!r} is not dict".format(self.cmds))
         for d in self.cmds.values():
             for i in d.values():
                 assrt(isinstance(i, (str, unicode)),
-                      "%r is not string or unicode" % i)
-        assrt(isinstance(self.hosts, list), "%r is not list" % self.hosts)
+                      "{0!r} is not string or unicode".format(i))
+        assrt(isinstance(self.hosts, list), "{0!r} is not list".format(self.hosts))
         for d in self.hosts:
             assrt(isinstance(d, tuple), "{0!r} is not tuple".format(d))
             assrt(len(d) == 6, "{0!r} length is not 6".format(d))
             assrt(isinstance(d[0], (str, unicode)),
-                  "%r is not string or unicode" % d[0])
-            assrt(isinstance(d[1], str), "%r is not string" % d[1])
-            assrt(isinstance(d[2], int), "%r is not integer" % d[2])
-            assrt(d[3] in (TELNET, SSH), "%r is not TELNET or SSH type" % d[3])
+                  "{0!r} is not string or unicode".format(d[0]))
+            assrt(isinstance(d[1], str), "{0!r} is not string".format(d[1]))
+            assrt(isinstance(d[2], int), "{0!r} is not integer".format(d[2]))
+            assrt(d[3] in (TELNET, SSH), "{0!r} is not TELNET or SSH type".format(d[3]))
             assrt(isinstance(d[4], (str, unicode)),
-                  "%r is not string or unicode" % d[4])
+                  "{0!r} is not string or unicode".format(d[4]))
             assrt(isinstance(d[5], (str, unicode)),
-                  "%r is not string or unicode" % d[5])
+                  "{0!r} is not string or unicode".format(d[5]))
 
     def __is_ipv4(self, address):
         # Thanks tzot @ stackoverflow.com
@@ -165,7 +165,7 @@ class lookingglass(object):
         return str(os.linesep.join(pre_return)).strip()
 
     def template(self, *args):
-        assrt(len(args) == 2, "%r length is not 2" % args)
+        assrt(len(args) == 2, "{0!r} length is not 2".format(args))
         return """
             <!DOCTYPE html>
             <html lang="en">
