@@ -151,6 +151,7 @@ class lookingglass(object):
             tn.write(str(command) + "\n")  # sanitize arguments!?
             sleep(0.1)
             read_data = str(tn.read_all()).splitlines()
+            sleep(0.1)
             print read_data
             try:
                 tn.write("exit\n")
