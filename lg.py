@@ -145,11 +145,12 @@ class lookingglass(object):
                 tn.write(str(pwd) + "\n")
             tn.write(str(command) + "\n")  # sanitize arguments!?
             tn.expect(['/'+str(command)+'/'], 5)
+            read_data = str(tn.read_all()).splitlines()
+            print read_data
             try:
                 tn.write("exit\n")
             except:
                 pass
-            read_data = str(tn.read_all()).splitlines()
         elif typ == SSH:
             ssh = paramiko.SSHClient()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
