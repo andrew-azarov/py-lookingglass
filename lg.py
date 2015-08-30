@@ -215,7 +215,7 @@ class lookingglass(object):
             hosts = "".join(["".join(['<option value="',
                                       str(k),
                                       '">',
-                                      v[5],
+                                      v[4],
                                       '</option>'])
                              for k, v in enumerate(self.hosts)])
             commands = "".join(["".join(['<option value="',
