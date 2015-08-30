@@ -153,8 +153,9 @@ class lookingglass(object):
                 tn.write("exit\r\n")
             except:
                 pass
-            tn.close()
             read_data = str(tn.read_all()).splitlines()
+            tn.close()
+            
             print read_data
         elif typ == SSH:
             ssh = paramiko.SSHClient()
