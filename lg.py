@@ -19,7 +19,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 import telnetlib
-import paramiko
+try:
+    import paramiko
+    NOSSH = 0
+except ImportError:
+    NOSSH = 1
 import os
 import socket
 import cgi
@@ -80,8 +84,8 @@ class lookingglass(object):
                       "%r is not string or unicode" % i)
         assrt(isinstance(self.hosts, list), "%r is not list" % self.hosts)
         for d in self.hosts:
-            assrt(isinstance(d, tuple), "%r is not tuple" % d)
-            assrt(len(d) == 6, "%r length is not 6" % d)
+            assrt(isinstance(d, tuple), "{0!r} is not tuple".format(d))
+            assrt(len(d) == 6, "{0!r} length is not 6".format(d))
             assrt(isinstance(d[0], (str, unicode)),
                   "%r is not string or unicode" % d[0])
             assrt(isinstance(d[1], str), "%r is not string" % d[1])
@@ -312,6 +316,8 @@ if __name__ == '__main__':
         hosts = [("password1", "192.168.0.1", 23, TELNET, "Cisco", 'cisco'),
                  ("password2", "192.168.1.1", 2605, TELNET, "Quagga", 'cisco'),
                  ("login:password3", "192.168.2.1", 22, SSH, "Juniper", 'juniper')]
+    if NOSSH:
+        hosts = [i for i in hosts if i[3] != SSH]
     httpd = make_server(a.bind, a.port, lookingglass(
         name=a.name, cmds=commands, hosts=hosts))
     httpd.serve_forever()
