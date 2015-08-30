@@ -1,11 +1,17 @@
-from distutils.core import setup
+# Always prefer setuptools over distutils
+from setuptools import setup
+
+from os import path
+
+here = path.abspath(path.dirname(__file__))
 setup(name='py-lookingglass',
-      version='0.59',
+      version='0.9',
       py_modules=['lg'],
       url='https://github.com/andrew-azarov/py-lookingglass',
       author='Andrew Azarov',
+      license='MIT',
       author_email='andrew@serverastra.com',
-      classifiers=['Development Status :: 4 - Beta',
+      classifiers=['Development Status :: 5 - Production/Stable',
                    'Environment :: Web Environment',
                    'Intended Audience :: Telecommunications Industry',
                    'Intended Audience :: System Administrators',
@@ -15,7 +21,8 @@ setup(name='py-lookingglass',
                    'Topic :: Internet :: WWW/HTTP :: WSGI :: Application',
                    'Topic :: System :: Networking',
                    'Topic :: System :: Systems Administration'],
-      description='Python looking glass implementation with wsgi',
+      description='Python looking glass WSGI implementation',
+      install_requires=['paramiko>=1.15.1'],
       long_description="""py-lookingglass
 ===============
 
@@ -36,6 +43,9 @@ Standard python modules:
 - traceback
 - random
 - argparse
+
+External:
+
 - paramiko
 
 Setup:
@@ -52,5 +62,12 @@ Or you can use it as WSGI callback
 Any additional hacks can be applied before init of class
 
 Check ``help(lg.lookingglass)`` for more info
-"""
+
+Should also install executable py-lookingglass
+""",
+      entry_points={
+          'console_scripts': [
+           'py-lookingglass = lg',
+          ],
+      }
       )
