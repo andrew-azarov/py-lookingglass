@@ -148,21 +148,13 @@ class lookingglass(object):
                 tn.read_until("Password: ", 5)  # 5 seconds timeout
                 tn.write(str(pwd) + "\r\n")
             tn.write(str(command) + "\r\n")  # sanitize arguments!?
-            read_data = []
-            try:
-                while 1:
-                    data = tn.read_very_eager()
-                    print data
-                    if data == '':
-                        break
-                    read_data.extend(str(data).splitlines())
-            except EOFError:
-                pass
             sleep(0.1)
             try:
-                tn.write("exit\n")
+                tn.write("exit\r\n")
             except:
                 pass
+            tn.close()
+            read_data = str(tn.read_all()).splitlines()
             print read_data
         elif typ == SSH:
             ssh = paramiko.SSHClient()
