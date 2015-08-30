@@ -148,16 +148,16 @@ class lookingglass(object):
                 tn.read_until("Password: ", 5)  # 5 seconds timeout
                 tn.write(str(pwd) + "\n")
             tn.write(str(command) + "\n")  # sanitize arguments!?
-            sleep(0.1)
-            try:
-                tn.write("exit\n")
-            except:
-                pass
             read_data = []
             try:
                 while 1:
                     read_data.extend(str(tn.read_very_eager()).splitlines())
             except EOFError:
+                pass
+            sleep(0.1)
+            try:
+                tn.write("exit\n")
+            except:
                 pass
             print read_data
         elif typ == SSH:
