@@ -29,6 +29,8 @@ import socket
 import cgi
 import traceback
 import random
+import json  # For config
+import os.path
 from wsgiref.simple_server import make_server
 
 
@@ -140,7 +142,7 @@ class lookingglass(object):
             tn = telnetlib.Telnet(host, port)
             if pwd:
                 tn.read_until("Password: ", 5)  # 5 seconds timeout
-                tn.write(pwd + "\n")
+                tn.write(str(pwd) + "\n")
             tn.write(str(command) + "\n")  # sanitize arguments!?
             try:
                 tn.write("exit\n")
@@ -316,6 +318,7 @@ if __name__ == '__main__':
         hosts = [("password1", "192.168.0.1", 23, TELNET, "Cisco", 'cisco'),
                  ("password2", "192.168.1.1", 2605, TELNET, "Quagga", 'cisco'),
                  ("login:password3", "192.168.2.1", 22, SSH, "Juniper", 'juniper')]
+
     if NOSSH:
         hosts = [i for i in hosts if i[3] != SSH]
     httpd = make_server(a.bind, a.port, lookingglass(
