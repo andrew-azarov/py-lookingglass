@@ -223,7 +223,7 @@ class lookingglass(object):
                                          '">',
                                          str(k),
                                          '</option>'])
-                                for k in self.cmds[self.hosts[0]].keys()])  # First taken as all profiles must have same data
+                                for k in self.cmds[0].keys() ])  # First taken as all profiles must have same data
             data = [self.name, """
             <section>
             <header>Looking Glass</header><br>
