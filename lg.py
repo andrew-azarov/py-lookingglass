@@ -147,9 +147,9 @@ class lookingglass(object):
             if pwd:
                 tn.read_until("Password: ", 5)  # 5 seconds timeout
                 tn.write(str(pwd) + "\n")
-                sleep(0.1)
             tn.write(str(command) + "\n")  # sanitize arguments!?
-            sleep(0.1)
+            prompt = tn.read_until(str(command)+"\n", 5)
+            print prompt
             try:
                 tn.write("exit\n")
             except:
@@ -334,5 +334,5 @@ if __name__ == '__main__':
     if NOSSH:
         hosts = [i for i in hosts if i[3] != SSH]
     httpd = make_server(a.bind, a.port, lookingglass(
-        name=a.name, cmds=commands, hosts=hosts, resolve=True))
+        name=a.name, cmds=commands, hosts=hosts, resolve=False))
     httpd.serve_forever()
