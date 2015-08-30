@@ -146,8 +146,8 @@ class lookingglass(object):
             tn = telnetlib.Telnet(host, port, timeout=5)
             if pwd:
                 tn.read_until("Password: ", 5)  # 5 seconds timeout
-                tn.write(str(pwd) + "\n")
-            tn.write(str(command) + "\n")  # sanitize arguments!?
+                tn.write(str(pwd) + "\r\n")
+            tn.write(str(command) + "\r\n")  # sanitize arguments!?
             read_data = []
             try:
                 while 1:
