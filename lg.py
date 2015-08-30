@@ -322,5 +322,5 @@ if __name__ == '__main__':
     if NOSSH:
         hosts = [i for i in hosts if i[3] != SSH]
     httpd = make_server(a.bind, a.port, lookingglass(
-        name=a.name, cmds=commands, hosts=hosts))
+        name=a.name, cmds=commands, hosts=hosts, resolve=True))
     httpd.serve_forever()
