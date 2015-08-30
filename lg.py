@@ -142,7 +142,7 @@ class lookingglass(object):
             else:
                 raise AttributeError
         if typ == TELNET:
-            tn = telnetlib.Telnet(host, port)
+            tn = telnetlib.Telnet(host, port, timeout=5)
             if pwd:
                 tn.read_until("Password: ", 5)  # 5 seconds timeout
                 tn.write(str(pwd) + "\n")
