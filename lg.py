@@ -31,6 +31,7 @@ import traceback
 import random
 import json  # For config
 import os.path
+from time import sleep
 from wsgiref.simple_server import make_server
 
 
@@ -146,8 +147,9 @@ class lookingglass(object):
             if pwd:
                 tn.read_until("Password: ", 5)  # 5 seconds timeout
                 tn.write(str(pwd) + "\n")
+                sleep(0.1)
             tn.write(str(command) + "\n")  # sanitize arguments!?
-            tn.expect(['/.*/'], 5)
+            sleep(0.1)
             read_data = str(tn.read_all()).splitlines()
             print read_data
             try:
