@@ -151,7 +151,10 @@ class lookingglass(object):
             read_data = []
             try:
                 while 1:
-                    read_data.extend(str(tn.read_very_eager()).splitlines())
+                    data = tn.read_very_eager()
+                    if data == '':
+                        break
+                    read_data.extend(str(data).splitlines())
             except EOFError:
                 pass
             sleep(0.1)
