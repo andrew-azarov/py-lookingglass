@@ -49,7 +49,7 @@ class lookingglass(object):
     name    -- Header name for pages (default not set)
     cmds    -- Commands dict of dicts, use %ARG% for substition of IP or hostname
                 argument (default not set)
-    hosts   -- Host dict of tuples with password (or login:password in case of ssh),
+    hosts   -- Host list of tuples with password (or login:password in case of ssh),
                 host address, port number, type (SSH == int(1) or TELNET == int(0))
                 and name for display (default not set)
 
@@ -78,8 +78,8 @@ class lookingglass(object):
             for i in d.values():
                 assrt(isinstance(i, (str, unicode)),
                       "%r is not string or unicode" % i)
-        assrt(isinstance(self.hosts, dict), "%r is not dict" % self.hosts)
-        for d in self.hosts.values():
+        assrt(isinstance(self.hosts, list), "%r is not list" % self.hosts)
+        for d in self.hosts:
             assrt(isinstance(d, tuple), "%r is not tuple" % d)
             assrt(len(d) == 6, "%r length is not 6" % d)
             assrt(isinstance(d[0], (str, unicode)),
