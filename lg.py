@@ -144,7 +144,7 @@ class lookingglass(object):
                 tn.read_until("Password: ", 5)  # 5 seconds timeout
                 tn.write(str(pwd) + "\n")
             tn.write(str(command) + "\n")  # sanitize arguments!?
-            tn.expect(str(command), 5)
+            tn.expect(['/'str(command)+'/'], 5)
             try:
                 tn.write("exit\n")
             except:
