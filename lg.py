@@ -152,6 +152,7 @@ class lookingglass(object):
             try:
                 while 1:
                     data = tn.read_very_eager()
+                    print data
                     if data == '':
                         break
                     read_data.extend(str(data).splitlines())
