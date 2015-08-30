@@ -79,12 +79,14 @@ class lookingglass(object):
             assrt(self.__dict__[i], "%s is not set".format(i))
         assrt(isinstance(self.name, (str, unicode)),
               "{0!r} is not string or unicode".format(self.name))
-        assrt(isinstance(self.cmds, dict), "{0!r} is not dict".format(self.cmds))
+        assrt(isinstance(self.cmds, dict),
+              "{0!r} is not dict".format(self.cmds))
         for d in self.cmds.values():
             for i in d.values():
                 assrt(isinstance(i, (str, unicode)),
                       "{0!r} is not string or unicode".format(i))
-        assrt(isinstance(self.hosts, list), "{0!r} is not list".format(self.hosts))
+        assrt(isinstance(self.hosts, list),
+              "{0!r} is not list".format(self.hosts))
         for d in self.hosts:
             assrt(isinstance(d, tuple), "{0!r} is not tuple".format(d))
             assrt(len(d) == 6, "{0!r} length is not 6".format(d))
@@ -92,7 +94,8 @@ class lookingglass(object):
                   "{0!r} is not string or unicode".format(d[0]))
             assrt(isinstance(d[1], str), "{0!r} is not string".format(d[1]))
             assrt(isinstance(d[2], int), "{0!r} is not integer".format(d[2]))
-            assrt(d[3] in (TELNET, SSH), "{0!r} is not TELNET or SSH type".format(d[3]))
+            assrt(d[3] in (TELNET, SSH),
+                  "{0!r} is not TELNET or SSH type".format(d[3]))
             assrt(isinstance(d[4], (str, unicode)),
                   "{0!r} is not string or unicode".format(d[4]))
             assrt(isinstance(d[5], (str, unicode)),
@@ -144,7 +147,7 @@ class lookingglass(object):
                 tn.read_until("Password: ", 5)  # 5 seconds timeout
                 tn.write(str(pwd) + "\n")
             tn.write(str(command) + "\n")  # sanitize arguments!?
-            tn.expect(['/'+str(command)+'/'], 5)
+            tn.expect(['/.*/'], 5)
             read_data = str(tn.read_all()).splitlines()
             print read_data
             try:
