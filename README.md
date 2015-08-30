@@ -16,6 +16,9 @@ Standard python modules:
 * random
 * traceback
 * argparse
+
+External:
+
 * paramiko
 
 Setup:
@@ -31,3 +34,5 @@ lg.lookingglass(name="Looking Glass", cmds=['command','list'], hosts=[('password
 Any additional hacks can be applied before init of class
 
 Check `help(lg.lookingglass)` for more info
+
+Should also install executable py-lookingglass
