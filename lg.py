@@ -153,16 +153,12 @@ class lookingglass(object):
                     tn.write(str(pwd) + "\r\n")
                 tn.write(str(command) + "\r\n")  # sanitize arguments!?
                 sleep(1)  # Telnetlib is has no external polling capabilities
-                try:
-                    tn.write("exit\r\n")
-                except:
-                    pass
+                tn.write("exit\r\n")
                 read_data = []
                 try:
-                    while 1:
-                        read_data += str(tn.read_very_eager()).splitlines()
+                    read_data += str(tn.read_eager()).splitlines()
                 except EOFError:
-                    pass
+                    break
                 print read_data
                 tn.close()
             except socket.timeout:
