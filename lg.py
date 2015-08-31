@@ -134,7 +134,8 @@ class lookingglass(object):
             if self.__is_ipv4(arg) or self.__is_ipv6(arg):  # Not IPv4 or IPv6
                 command = command.replace("%ARG%", arg)
             elif len(socket.getaddrinfo(arg, None)) > 0 and not self.resolve:
-                command = command.replace("%ARG%", arg)  # Resolve by switch/router
+                # Resolve by switch/router
+                command = command.replace("%ARG%", arg)
             elif self.resolve:  # Hostname support
                 try:
                     arg = random.choice(socket.getaddrinfo(arg, None))[4][0]
@@ -170,11 +171,13 @@ class lookingglass(object):
             read_data = stdout.read().splitlines()
             ssh.close()
         pre_return = []
-        indexes = []
+        indexes = [0, len(read_data)]
         for line in read_data:
-            if command in line or 'exit' in line:
-                indexes.append(read_data.index(line))
-        pre_return = read_data[min(indexes) + 1: max(indexes)]
+            if command in line:
+                indexes[0] = read_data.index(line) + 1
+            elif 'exit' in line:
+                indexes[1] = read_data.index(line)
+        pre_return = read_data[indexes[0]: indexes[1]]
         return str(os.linesep.join(pre_return)).strip()
 
     def template(self, *args):
