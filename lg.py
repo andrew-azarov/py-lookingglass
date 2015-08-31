@@ -157,15 +157,15 @@ class lookingglass(object):
                 sleep(0.1)
                 read_data = ""
                 try:
-                    timer = 100
+                    timer = 100  # Ten seconds
                     data = tn.read_eager()
                     while timer > 0:
+                        read_data += str(data)
+                        data = tn.read_eager()
                         if not data:
                             sleep(0.1)
                             timer -= 1
                             continue
-                        read_data += str(data)
-                        data = tn.read_eager()
                 except EOFError:
                     pass
                 print read_data
