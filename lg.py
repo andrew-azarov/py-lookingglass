@@ -170,9 +170,9 @@ class lookingglass(object):
         pre_return = []
         indexes = []
         for line in read_data:
-            if command in line or exit in line:
+            if command in line or 'exit' in line:
                 indexes.append(read_data.index(line))
-        pre_return = read_data[indexes.min()+1,indexes.max()]
+        pre_return = read_data[indexes.min() + 1, indexes.max()]
         return str(os.linesep.join(pre_return)).strip()
 
     def template(self, *args):
