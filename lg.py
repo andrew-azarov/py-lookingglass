@@ -131,8 +131,10 @@ class lookingglass(object):
     def __issuecommand(self, host, port, typ, pwd, command, arg):
         socket.setdefaulttimeout(30)
         if "%ARG%" in command:
-            if self.__is_ipv4(arg) or self.__is_ipv6(arg):
+            if self.__is_ipv4(arg) or self.__is_ipv6(arg):  # Not IPv4 or IPv6
                 command = command.replace("%ARG%", arg)
+            elif len(socket.getaddrinfo(arg, None)) > 0 and not self.resolve:
+                command = command.replace("%ARG%", arg)  # Resolve by switch/router
             elif self.resolve:  # Hostname support
                 try:
                     arg = random.choice(socket.getaddrinfo(arg, None))[4][0]
