@@ -160,7 +160,7 @@ class lookingglass(object):
                 read_data = []
                 try:
                     while 1:
-                        read_data += str(tn.read_very_eagerly()).splitlines()
+                        read_data += str(tn.read_very_eager()).splitlines()
                 except EOFError:
                     pass
                 print read_data
