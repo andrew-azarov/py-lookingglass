@@ -157,7 +157,13 @@ class lookingglass(object):
                     tn.write("exit\r\n")
                 except:
                     pass
-                read_data = str(tn.read_all()).splitlines()
+                read_data = []
+                try:
+                    while 1:
+                        read_data += str(tn.read_very_eagerly()).splitlines()
+                except EOFError:
+                    pass
+                print read_data
                 tn.close()
             except socket.timeout:
                 read_data = ['Connection Timeout, please try again later']
