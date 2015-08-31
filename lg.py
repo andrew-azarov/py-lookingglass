@@ -156,7 +156,10 @@ class lookingglass(object):
                 tn.write("exit\r\n")
                 read_data = []
                 try:
-                    read_data += str(tn.read_eager()).splitlines()
+                    data = tn.read_eager()
+                    while data:
+                        read_data += str(data).splitlines()
+                        data = tn.read_eager()
                 except EOFError:
                     pass
                 print read_data
