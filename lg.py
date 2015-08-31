@@ -152,12 +152,18 @@ class lookingglass(object):
                     tn.read_until("Password: ", 15)  # 15 seconds timeout
                     tn.write(str(pwd) + "\r\n")
                 tn.write(str(command) + "\r\n")  # sanitize arguments!?
-                sleep(1)  # Telnetlib is has no external polling capabilities
+                sleep(0.1)  # Telnetlib is has no external polling capabilities
                 tn.write("exit\r\n")
+                sleep(0.1)
                 read_data = ""
                 try:
+                    timer = 10
                     data = tn.read_eager()
-                    while data:
+                    while timer > 0:
+                        if not data:
+                            sleep(0.1)
+                            timer -= 1
+                            continue
                         read_data += str(data)
                         data = tn.read_eager()
                 except EOFError:
