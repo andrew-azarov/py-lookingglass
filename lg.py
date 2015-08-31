@@ -157,7 +157,7 @@ class lookingglass(object):
                 sleep(0.1)
                 read_data = ""
                 try:
-                    timer = 10
+                    timer = 100
                     data = tn.read_eager()
                     while timer > 0:
                         if not data:
