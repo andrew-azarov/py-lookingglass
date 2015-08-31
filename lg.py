@@ -158,7 +158,7 @@ class lookingglass(object):
                 try:
                     read_data += str(tn.read_eager()).splitlines()
                 except EOFError:
-                    break
+                    pass
                 print read_data
                 tn.close()
             except socket.timeout:
