@@ -143,20 +143,21 @@ class lookingglass(object):
             else:
                 raise AttributeError
         if typ == TELNET:
-            tn = telnetlib.Telnet(host, port, timeout=5)
-            if pwd:
-                tn.read_until("Password: ", 5)  # 5 seconds timeout
-                tn.write(str(pwd) + "\r\n")
-            tn.write(str(command) + "\r\n")  # sanitize arguments!?
-            sleep(0.1)
             try:
-                tn.write("exit\r\n")
-            except:
-                pass
-            read_data = str(tn.read_all()).splitlines()
-            tn.close()
-            
-            print read_data
+                tn = telnetlib.Telnet(host, port, timeout=30)
+                if pwd:
+                    tn.read_until("Password: ", 15)  # 15 seconds timeout
+                    tn.write(str(pwd) + "\r\n")
+                tn.write(str(command) + "\r\n")  # sanitize arguments!?
+                sleep(1)  # Telnetlib is has no external polling capabilities
+                try:
+                    tn.write("exit\r\n")
+                except:
+                    pass
+                read_data = str(tn.read_all()).splitlines()
+                tn.close()
+            except socket.timeout:
+                read_data = ['Connection Timeout, please try again later']
         elif typ == SSH:
             ssh = paramiko.SSHClient()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -167,11 +168,11 @@ class lookingglass(object):
             read_data = stdout.read().splitlines()
             ssh.close()
         pre_return = []
-        if 'exit' in read_data[-1]:
-            read_data.pop(-1)
+        indexes = []
         for line in read_data:
-            if command not in line:
-                pre_return.append(line)
+            if command in line or exit in line:
+                indexes.append(read_data.index(line))
+        pre_return = read_data[indexes.min()+1,indexes.max()]
         return str(os.linesep.join(pre_return)).strip()
 
     def template(self, *args):
