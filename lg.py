@@ -64,14 +64,14 @@ class lookingglass(object):
                         (default False)
     ipv6_disable    -- Disable ipv6 resolving and check of arguments
                         (default False)
-    resolve         -- Resolve hostnames (default True)
+    resolve         -- Resolve hostnames (default False)
     """
     name = None
     cmds = None
     hosts = None
     ipv4_disable = False
     ipv6_disable = False
-    resolve = True
+    resolve = False
 
     def __init__(self, **kwargs):
         for i in ['name', 'cmds', 'hosts']:
@@ -172,7 +172,6 @@ class lookingglass(object):
         for line in read_data:
             if command in line or 'exit' in line:
                 indexes.append(read_data.index(line))
-        print indexes
         pre_return = read_data[min(indexes) + 1: max(indexes)]
         return str(os.linesep.join(pre_return)).strip()
 
