@@ -154,15 +154,16 @@ class lookingglass(object):
                 tn.write(str(command) + "\r\n")  # sanitize arguments!?
                 sleep(1)  # Telnetlib is has no external polling capabilities
                 tn.write("exit\r\n")
-                read_data = []
+                read_data = ""
                 try:
                     data = tn.read_eager()
                     while data:
-                        read_data += str(data).splitlines()
+                        read_data += str(data)
                         data = tn.read_eager()
                 except EOFError:
                     pass
                 print read_data
+                read_data = read_data.splitlines()
                 tn.close()
             except socket.timeout:
                 read_data = ['Connection Timeout, please try again later']
