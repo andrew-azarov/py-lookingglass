@@ -271,6 +271,20 @@ class lookingglass(object):
 
 if __name__ == '__main__':
     import argparse
+    commands = {
+        'cisco': {
+            'BGP Summary': 'sh ip bgp summary',
+            'BGP Advertised _ARGUMENT_ to Neighbor': 'sh ip bgp neighbor %ARG% advertised',
+            'Ping': 'ping %ARG%',
+            'Traceroute': 'traceroute %ARG%'
+        },
+        'juniper': {
+            'BGP Summary': 'cli -c "sh bgp sum"',
+            'BGP Advertised _ARGUMENT_ to Neighbor': 'cli -c "show route advertising-protocol bgp %ARG%"',
+            'Ping': 'ping -c 4 %ARG%',
+            'Traceroute': 'traceroute %ARG%'
+        }
+    }
 
     def tuples(s):
         try:
@@ -295,14 +309,15 @@ if __name__ == '__main__':
                         default={},
                         nargs='*',
                         action="append",
-                        help="Commands dict of dict for profiles where key is profile name, use %%ARG%% for substition of IP/hostname argument. Key in command is display friendly version",
+                        help="Json array for profiles where key is profile name, use %%ARG%% for substition of IP/hostname argument. Key in command is display friendly version. \r\n Example: \r\n" +
+                        json.dumps(commands),
                         required=False)
     parser.add_argument("-H",
                         "--hosts",
                         dest='hosts',
-                        type=tuples,
+                        type=json.loads,
                         nargs='*',
-                        help="Host list of tuples with password, host address, port number, type of connection (ssh or telnet), name for display and command profile to use",
+                        help="Comma separated profile for router 'password','host_address',port_number,type_of_connection(1 for ssh and 0 for telnet),name,command_profile separated by space",
                         required=False)
     parser.add_argument("-b",
                         "--bind",
@@ -321,21 +336,7 @@ if __name__ == '__main__':
     a = parser.parse_args()
     if a.commands:
         commands = a.commands
-    else:
-        commands = {
-            'cisco': {
-                'BGP Summary': 'sh ip bgp summary',
-                'BGP Advertised _ARGUMENT_ to Neighbor': 'sh ip bgp neighbor %ARG% advertised',
-                'Ping': 'ping %ARG%',
-                'Traceroute': 'traceroute %ARG%'
-            },
-            'juniper': {
-                'BGP Summary': 'cli -c "sh bgp sum"',
-                'BGP Advertised _ARGUMENT_ to Neighbor': 'cli -c "show route advertising-protocol bgp %ARG%"',
-                'Ping': 'ping -c 4 %ARG%',
-                'Traceroute': 'traceroute %ARG%'
-            }
-        }
+
     if a.hosts:
         hosts = a.hosts
     else:
