@@ -160,10 +160,13 @@ class lookingglass(object):
                     else:
                         timer -= 1
                         sleep(0.1)
-                prompt = p.splitlines()[-1]
-                tn.write(str(command) + "\r\n")  # sanitize arguments!?
+                prompt = p.splitlines()[-1]  # Last line with prompt
+                tn.write(str(command) + "\r\n")  # Sanitize arguments!?
                 read_data = tn.read_until(prompt, 10)
                 read_data = read_data.splitlines()
+                for line in read_data[:]:
+                    if prompt in line:
+                        read_data.remove(line)
                 tn.write("exit\r\n")
                 tn.close()
             except socket.timeout:
