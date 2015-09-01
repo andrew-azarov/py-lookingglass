@@ -149,27 +149,22 @@ class lookingglass(object):
             try:
                 tn = telnetlib.Telnet(host, port, timeout=30)
                 if pwd:
-                    tn.read_until("Password: ", 15)  # 15 seconds timeout
+                    tn.read_until("Password: ", 30)  # 30 seconds timeout
                     tn.write(str(pwd) + "\r\n")
+                p = ""
+                timer = 50  # 5 seconds read timeout
+                while timer:
+                    if tn.sock_avail():
+                        p += tn.read_some()
+                        timer += 1
+                    else:
+                        timer -= 1
+                        sleep(0.1)
+                prompt = p.splitlines()[-1]
                 tn.write(str(command) + "\r\n")  # sanitize arguments!?
-                sleep(0.1)  # Telnetlib is has no external polling capabilities
-                tn.write("exit\r\n")
-                sleep(0.1)
-                read_data = ""
-                try:
-                    timer = 100  # Ten seconds
-                    data = tn.read_eager()
-                    while timer > 0:
-                        read_data += str(data)
-                        data = tn.read_eager()
-                        if not data:
-                            sleep(0.1)
-                            timer -= 1
-                            continue
-                except EOFError:
-                    pass
-                print read_data
+                read_data = tn.read_until(prompt, 10)
                 read_data = read_data.splitlines()
+                tn.write("exit\r\n")
                 tn.close()
             except socket.timeout:
                 read_data = ['Connection Timeout, please try again later']
