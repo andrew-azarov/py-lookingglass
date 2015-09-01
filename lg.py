@@ -330,8 +330,8 @@ if __name__ == '__main__':
                 'Traceroute': 'traceroute %ARG%'
             },
             'juniper': {
-                'BGP Summary': 'echo "sh bgp sum" | cli',
-                'BGP Advertised _ARGUMENT_ to Neighbor': 'echo "show route advertising-protocol bgp %ARG%" | cli',
+                'BGP Summary': 'cli -c "sh bgp sum"',
+                'BGP Advertised _ARGUMENT_ to Neighbor': 'cli -c "show route advertising-protocol bgp %ARG%"',
                 'Ping': 'ping -c 4 %ARG%',
                 'Traceroute': 'traceroute %ARG%'
             }
