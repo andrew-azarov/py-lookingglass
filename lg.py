@@ -305,7 +305,7 @@ if __name__ == '__main__':
     parser.add_argument("-c",
                         "--commands",
                         dest='commands',
-                        type=dict,
+                        type=json.loads,
                         default={},
                         nargs='*',
                         action="append",
@@ -315,7 +315,7 @@ if __name__ == '__main__':
     parser.add_argument("-H",
                         "--hosts",
                         dest='hosts',
-                        type=json.loads,
+                        type=tuples,
                         nargs='*',
                         help="Comma separated profile for router 'password','host_address',port_number,type_of_connection(1 for ssh and 0 for telnet),name,command_profile separated by space",
                         required=False)
