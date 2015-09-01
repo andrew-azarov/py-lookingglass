@@ -310,7 +310,7 @@ if __name__ == '__main__':
                         nargs='*',
                         action="append",
                         help="Json array for profiles where key is profile name, use %%ARG%% for substition of IP/hostname argument. Key in command is display friendly version. \r\n Example: \r\n" +
-                        json.dumps(commands),
+                        json.dumps(commands).replace('%','%%'),
                         required=False)
     parser.add_argument("-H",
                         "--hosts",
