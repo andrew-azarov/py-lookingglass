@@ -294,7 +294,7 @@ if __name__ == '__main__':
         except:
             raise argparse.ArgumentTypeError("""Hosts must be 'password' (or for ssh 'login:password'),'ip',port,'name','profile'
     password, ip, name and profile == string or unicode and port, conn == int""")
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument("-n",
                         "--name",
                         dest='name',
